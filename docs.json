@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "almond",
   "name": "Crème'ai Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6517e9",
+    "light": "#d9d9d9",
+    "dark": "#191919"
   },
   "favicon": "/favicon.svg",
   "anchors": [
@@ -50,20 +50,18 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@creme.ai"
+        "href": "mailto:ginghong.y@gmail.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://creme.ai"
+      "href": "https://creme-ai.cc"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/cremeai",
-      "github": "https://github.com/cremeai",
-      "linkedin": "https://linkedin.com/company/cremeai"
+      "x": "https://x.com/creme_ai"
     }
   }
 }
