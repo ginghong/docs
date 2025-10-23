@@ -71,9 +71,9 @@
         "tab": "TEST",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "TEST",
             "pages": [
-              "api-reference/introduction"
+              "test/test"
             ]
           },
           {
