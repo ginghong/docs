@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "almond",
+  "theme": "linden",
   "name": "Crème'ai Documentation",
   "colors": {
     "primary": "#6517e9",
@@ -10,7 +10,7 @@
   "favicon": "/favicon.svg",
   "anchors": [
     {
-      "name": "Getting started anchors",
+      "name": "Home",
       "icon": "house",
       "url": "/"
     }
@@ -55,7 +55,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Get Started",
+      "label": "Open app",
       "href": "https://creme-ai.cc"
     }
   },
