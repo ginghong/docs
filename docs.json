@@ -25,9 +25,18 @@
         "pages": [
           "index",
           "thesis",
-          "aim-and-principles",
+          "aim-and-principles"
+        ]
+      },
+      {
+        "group": "MVP Product",
+        "icon": "cube",
+        "pages": [
+          "mvp-overview",
+          "user-journey",
+          "product-surfaces",
           "how-it-works",
-          "hackathon-mvp"
+          "mvp-scope"
         ]
       }
     ]

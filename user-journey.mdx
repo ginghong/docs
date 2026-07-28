@@ -1,0 +1,80 @@
+---
+title: "User Journey"
+sidebarTitle: "User Journey"
+description: "The intended first-session and returning-user experience in the DualClash MVP."
+icon: "route"
+keywords: ["DualClash user journey", "MVP flow", "user experience"]
+---
+
+The MVP should tell a coherent story from curiosity to participation. Every step needs to answer one question for the user before asking them to take the next action.
+
+## First-session journey
+
+<Steps>
+  <Step title="Discover a topic">
+    The user sees a clear question, two opposing sides, current market activity, and a preview of the strongest arguments.
+
+    **The user should understand:** what people disagree about and why the topic is active.
+  </Step>
+  <Step title="Compare both sides">
+    The topic page presents both stance tokens symmetrically, without implying that price equals truth.
+
+    **The user should understand:** what each token represents and how support currently differs.
+  </Step>
+  <Step title="Choose a stance">
+    The user selects the side that matches their view and previews the token amount, price impact, fees, and resulting position.
+
+    **The user should understand:** buying expresses economic conviction and creates visible affiliation.
+  </Step>
+  <Step title="Complete the trade">
+    The interface confirms the transaction and immediately reflects the new balance, side identity, and market movement.
+
+    **The user should understand:** they now hold a position and belong to that side's holder community.
+  </Step>
+  <Step title="Lock for voting power">
+    The user chooses how many tokens to lock and sees the voting power they will receive and any applicable unlock conditions.
+
+    **The user should understand:** locking is a deeper commitment that unlocks participation.
+  </Step>
+  <Step title="Publish or back an argument">
+    Eligible users can write an argument. Other holders can allocate voting power to contributions on their side.
+
+    **The user should understand:** their position can influence which reasoning represents the community.
+  </Step>
+  <Step title="Share the position">
+    The user shares the topic, their stance, or a strong argument to bring others into the discussion.
+
+    **The user should understand:** market movement and argument quality evolve together as attention grows.
+  </Step>
+</Steps>
+
+## Returning-user loop
+
+A returning participant should quickly see what changed since the last visit:
+
+- price, market cap, holders, and activity for both sides;
+- new or rising arguments within their side;
+- voting power already allocated and still available;
+- position value, locked balance, and any accumulated rewards;
+- replies, recognition, or role changes connected to their contributions.
+
+## Critical moments to explain well
+
+| Moment | Likely confusion | Product response |
+| --- | --- | --- |
+| First view of two tokens | “Is this a prediction market?” | State that prices reflect conviction and attention, not outcome probability |
+| Buying a side | “What exactly am I receiving?” | Show token balance, side identity, price impact, and fees before confirmation |
+| Locking | “Am I staking, voting, or both?” | Separate locked balance, voting power, eligibility, rewards, and unlock rules |
+| Voting on arguments | “Does my vote move the token price?” | Explain that votes rank arguments; trades determine the market state |
+| Comparing sides | “Does the higher market cap mean it is true?” | Use neutral language such as leading in support or economic conviction |
+
+## Experience details to complete
+
+Before the MVP is presented publicly, fill in:
+
+- **Supported wallet:** `[Add wallet or connection method]`
+- **Network and currency:** `[Add chain, network, and trading asset]`
+- **Unlock behavior:** `[Add lock duration or unlock rule]`
+- **Failed transaction recovery:** `[Add the retry and error-message behavior]`
+- **Share format:** `[Add what a shared topic, stance, or argument contains]`
+- **New-user education:** `[Add tooltip, onboarding, or guided-demo approach]`

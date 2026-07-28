@@ -1,0 +1,78 @@
+---
+title: "MVP Scope & Open Decisions"
+sidebarTitle: "Scope & Decisions"
+description: "The product capabilities included in the current DualClash MVP and the decisions still being tested."
+icon: "list-check"
+keywords: ["DualClash scope", "MVP features", "open product decisions"]
+---
+
+This page defines the boundary between the current product, the next likely extensions, and the protocol ideas that are still under investigation. Update it as implementation decisions become final.
+
+## Core MVP capabilities
+
+| Capability | Why it belongs in the MVP | Current status |
+| --- | --- | --- |
+| Browse active topics | Establishes discovery and makes the product understandable without a wallet | `[Built / in progress / planned]` |
+| View two stance markets | Communicates the defining two-sided structure | `[Built / in progress / planned]` |
+| Buy and sell stance tokens | Makes conviction economically visible | `[Built / in progress / planned]` |
+| View wallet position | Connects the market to personal ownership and side identity | `[Built / in progress / planned]` |
+| Lock tokens for voting power | Converts ownership into committed participation | `[Built / in progress / planned]` |
+| Publish an argument | Gives the token position meaning and reasoning | `[Built / in progress / planned]` |
+| Back an argument | Lets holders surface the strongest contributions | `[Built / in progress / planned]` |
+| Compare both sides | Shows market activity and leading reasoning together | `[Built / in progress / planned]` |
+
+## Supporting capabilities
+
+These are not the concept by themselves, but they determine whether the MVP feels complete:
+
+- wallet connection and correct-network handling;
+- transaction previews, pending states, confirmations, and failures;
+- token, locked-balance, and voting-power accounting;
+- argument ordering and eligibility feedback;
+- empty, loading, disconnected, and low-balance states;
+- responsive layouts for the primary target devices;
+- a shareable link for a topic or argument.
+
+## Product decisions to complete
+
+| Decision | Current direction | What must be clarified |
+| --- | --- | --- |
+| Topic creation | `[Add current approach]` | Who can create, moderate, pause, or reject a topic? |
+| Market curve | `[Add model or formula]` | How do price and reserve change on buy and sell? |
+| Relationship between sides | `[Independent / weakly coupled / other]` | Does activity on one side affect the other side or topic heat? |
+| Token supply | `[Capped / uncapped / other]` | Is there a cap, and what happens when it is reached? |
+| Locking | `[Add current rule]` | Duration, unlock conditions, and whether voting power decays or resets |
+| Publishing eligibility | `At least 10 voting power` | Is the threshold fixed, configurable, or topic-specific? |
+| Argument voting | `[Add current rule]` | Can voting power be moved, withdrawn, reused, or allocated across arguments? |
+| Trading fees | `[Add percentage]` | How are fees divided among protocol, creator, lockers, or liquidity? |
+| Rewards | `[Add current rule]` | Who is eligible, when rewards accrue, and how they are claimed |
+| Recognition | `[Add MVP implementation]` | Which roles, badges, rankings, or reputation signals are visible? |
+| Market lifecycle | `[Add current rule]` | Can a topic close, graduate, migrate liquidity, or remain active indefinitely? |
+
+## Likely later extensions
+
+Keep these separate from the core experience until the MVP shows that the central loop works:
+
+- permissionless topic creation;
+- replies, quotations, and cross-side references;
+- richer profiles, roles, badges, and reputation;
+- moderation and community governance;
+- token-gated side spaces or coordination tools;
+- notifications and personalized topic discovery;
+- market graduation or external-liquidity migration;
+- mobile-native or embedded social experiences;
+- composability with third-party communities and applications.
+
+## Known product boundaries
+
+Complete this section with limitations that affect the experience, not submission administration:
+
+- `[Add a user action that is intentionally unavailable in the MVP]`
+- `[Add a temporary centralized or manual product behavior]`
+- `[Add the most important unsupported edge case]`
+- `[Add any economic behavior that is simulated or not yet final]`
+- `[Add any identity, reputation, or reward behavior deferred to a later version]`
+
+<Warning>
+  Avoid presenting open economic parameters as finalized protocol rules. The MVP can use temporary values to test the experience as long as the documentation labels them clearly.
+</Warning>
