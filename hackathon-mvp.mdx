@@ -1,0 +1,119 @@
+---
+title: "Hackathon MVP"
+sidebarTitle: "Hackathon MVP"
+description: "Submission links, deployed contracts, MVP scope, demo flow, and fill-in details for the DualClash hackathon build."
+icon: "flask"
+keywords: ["DualClash hackathon", "MVP", "demo", "deployment", "contracts"]
+---
+
+This page separates the working hackathon build from DualClash's longer-term product direction. Complete the placeholders before submitting or sharing the MVP.
+
+<Warning>
+  Text in square brackets is intentionally left for the team to complete. Remove this notice when the page is ready for reviewers.
+</Warning>
+
+## Submission links
+
+| Item | Value |
+| --- | --- |
+| Live application | `[Add deployed app URL]` |
+| Demo video | `[Add video URL]` |
+| Source code | `[Add repository URL]` |
+| Pitch deck | `[Add deck URL]` |
+| Team contact | `[Add email, Telegram, or X]` |
+
+## Deployment details
+
+| Item | Value |
+| --- | --- |
+| Network | `[Add chain and network]` |
+| Topic or factory contract | `[Add contract address]` |
+| Trading contract | `[Add contract address, or N/A]` |
+| Locking and voting contract | `[Add contract address, or N/A]` |
+| Block explorer | `[Add explorer URL]` |
+| Test-token faucet | `[Add faucet URL]` |
+
+## MVP scope
+
+Use this checklist to show reviewers exactly what works in the submitted build.
+
+- [ ] Browse active topics
+- [ ] View both stance tokens and their market activity
+- [ ] Buy a stance token
+- [ ] Sell a stance token
+- [ ] Lock tokens to receive voting power
+- [ ] Publish an argument with at least 10 voting power
+- [ ] Back an argument using voting power
+- [ ] View locking rewards or fee-sharing state
+- [ ] See wallet, network, transaction, loading, and error states
+- [ ] Share a topic, stance, or argument
+
+### Intentionally out of scope
+
+- `[Add feature intentionally excluded from the hackathon build]`
+- `[Add any manual or centralized shortcut used for the MVP]`
+- `[Add feature planned for the next milestone]`
+
+## Mechanism parameters
+
+Document the exact values used by the demo. These may be temporary MVP parameters.
+
+| Parameter | MVP value |
+| --- | --- |
+| Minimum voting power to publish | `10` |
+| Bonding-curve model | `[Add model or formula]` |
+| Trading fee | `[Add percentage]` |
+| Fee allocation | `[Add recipients and split]` |
+| Lock duration | `[Add duration or unlock rule]` |
+| Voting-power calculation | `[Add formula]` |
+| Topic creation | `[Curated / permissionless / admin-only]` |
+| Token supply or cap | `[Add value or uncapped]` |
+| Graduation or liquidity migration | `[Add rule or not included]` |
+
+## Recommended demo flow
+
+<Steps>
+  <Step title="Open one clear topic">
+    Use `[Add demo topic]` so judges immediately understand the two opposing positions.
+  </Step>
+  <Step title="Connect and choose a side">
+    Connect `[Add supported wallet]`, switch to `[Add network]`, and buy one stance token.
+  </Step>
+  <Step title="Show identity and commitment">
+    Point out that ownership identifies the participant with a side, then lock tokens to demonstrate deeper commitment and voting power.
+  </Step>
+  <Step title="Publish or back an argument">
+    Show how committed holders help their side surface its strongest reasoning.
+  </Step>
+  <Step title="Return to the market signal">
+    Compare the two sides and explain that price reflects relative attention and conviction—not truth or probability.
+  </Step>
+</Steps>
+
+## Test instructions
+
+1. Add `[network name]` using RPC URL `[RPC URL]` and chain ID `[chain ID]`.
+2. Get test tokens from `[faucet URL or instructions]`.
+3. Open `[application URL]` and connect `[supported wallet]`.
+4. `[Add any required setup, seed data, or test account]`.
+5. `[Add the shortest path to reproduce the core flow]`.
+
+## Known limitations
+
+- `[Add known contract or frontend limitation]`
+- `[Add unsupported browser, wallet, or network]`
+- `[Add unfinished state or edge case]`
+- `[Add security assumption or non-audited component]`
+
+## Hackathon summary
+
+- **Problem:** `[One sentence describing the user problem]`
+- **Solution:** `[One sentence describing DualClash]`
+- **What is novel:** `[One sentence explaining the market + argument + identity combination]`
+- **Why on-chain:** `[One sentence explaining what transparency, ownership, or composability enables]`
+- **What we shipped:** `[One sentence describing the working MVP]`
+- **Next milestone:** `[One sentence describing what comes after the hackathon]`
+
+<Note>
+  Keep this page factual. Label mocked, centralized, unaudited, or incomplete components clearly so reviewers can distinguish the live MVP from the intended protocol.
+</Note>
