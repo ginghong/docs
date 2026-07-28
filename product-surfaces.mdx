@@ -1,0 +1,97 @@
+---
+title: "Product Surfaces"
+sidebarTitle: "Product Surfaces"
+description: "The key pages and interface components needed to communicate the DualClash MVP clearly."
+icon: "browser"
+keywords: ["DualClash pages", "MVP interface", "product surfaces"]
+---
+
+The MVP can be explained through a small number of product surfaces. Each page should have one dominant purpose and make the relationship between the market, arguments, and side identity visible.
+
+## Home and discovery
+
+**Purpose:** help users find a topic worth opening.
+
+The home page should make each topic understandable before the user clicks into it.
+
+| Essential element | What it communicates |
+| --- | --- |
+| Topic question | The disagreement in one clear sentence |
+| Two stance tokens | The available positions and their names or symbols |
+| Relative activity | Price, market cap, volume, holders, or another deliberately selected signal |
+| Topic heat | Whether attention around the overall topic is increasing |
+| Argument preview | That DualClash is more than a token comparison |
+
+**Screenshot:** `[Add the current home-page image and a one-sentence caption]`
+
+## Topic page
+
+**Purpose:** become the single source of truth for one two-sided market.
+
+The topic page should answer four questions without requiring another page:
+
+1. What are the two positions?
+2. How much economic conviction has each side attracted?
+3. What are the strongest arguments for each side?
+4. What can I do next?
+
+Recommended regions include a topic header, balanced side summary, shared market chart or comparison, argument columns or filters, and a persistent action area for buying, locking, posting, and voting.
+
+**Screenshot:** `[Add the current topic-page image and label the major regions]`
+
+## Trade panel
+
+**Purpose:** let a user take or adjust a position with clear expectations.
+
+Before confirmation, show:
+
+- selected stance token;
+- input and estimated output;
+- current and estimated execution price;
+- price impact and fees;
+- wallet balance;
+- a plain-language reminder that the token represents a stance rather than an outcome claim.
+
+After confirmation, show the updated token balance and a natural next action: lock, view position, or share the stance.
+
+**Screenshot:** `[Add buy and sell states, including loading, success, and failure]`
+
+## Argument feed and composer
+
+**Purpose:** turn holder conviction into visible reasoning.
+
+An argument card should identify the stance, author, voting-power support, rank, timestamp, and any reply or reference context. The composer should show the minimum eligibility requirement before the user begins writing.
+
+For the current MVP, voting should be visually distinct from social reactions. A voting-power allocation represents committed support and should not look like an ordinary “like.”
+
+**Screenshot:** `[Add argument feed, argument detail, and composer states]`
+
+## Position and participation view
+
+**Purpose:** show the user what they own, what they have committed, and how they are recognized.
+
+At minimum, this view should distinguish:
+
+| State | Meaning |
+| --- | --- |
+| Available token balance | Tradable stance tokens held by the wallet |
+| Locked balance | Tokens committed to participation |
+| Total voting power | Influence created by locked tokens |
+| Allocated voting power | Support currently assigned to arguments |
+| Available voting power | Support still available to allocate |
+| Rewards or fee share | Value attributable to eligible locking, if active in the MVP |
+| Identity and recognition | Side affiliation, contribution history, role, badge, or reputation signals |
+
+**Screenshot:** `[Add wallet drawer, portfolio page, or profile view used by the current build]`
+
+## Topic creation or curation
+
+**Purpose:** define how new markets enter the product.
+
+For a curated MVP, document who creates topics and how the two sides, token names, descriptions, and initial parameters are selected. If topic creation is user-facing, the creation flow also needs preview, validation, duplicate-topic handling, and clear responsibility for initial liquidity or market configuration.
+
+**Current approach:** `[Curated / admin-created / permissionless / other]`
+
+<Note>
+  The MVP does not need a large number of pages. It needs a complete path through discovery, decision, transaction, participation, and return. Combine surfaces when doing so makes that path easier to understand.
+</Note>
