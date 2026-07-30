@@ -1,47 +1,75 @@
 ---
 title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+description: "Buy a stance token, stake conviction, publish arguments, vote, and claim rewards on GIWA Sepolia."
+icon: "rocket"
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
-
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+This guide covers the fastest path from connecting a wallet to participating in a DualClash topic on the current V3 testnet.
 
 ## Prerequisites
 
-Before you begin, you must have:
+| Requirement | Current setting |
+| --- | --- |
+| Network | GIWA Sepolia |
+| Chain ID | `91342` |
+| Wallet | An EVM-compatible wallet |
+| Gas | Testnet ETH |
+| Optional reserve asset | Faucet-enabled mUSDC for mUSDC topics |
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+<Warning>
+  mUSDC is test-only currency. It is not a real stablecoin or a claim on US dollars.
+</Warning>
 
-## Get started
+## Participate in a topic
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
-
-    ```bash
-    npm install your-package
-    ```
+  <Step title="Connect your wallet">
+    Switch to GIWA Sepolia and connect an EVM wallet. DualClash never receives your private key; every protocol action is signed in your wallet.
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
-
-    ```bash
-    your-cli init
-    ```
+  <Step title="Open a topic and choose a side">
+    Review the two stance tokens, current prices, supply, activity, arguments, and reserve type. Topics are permanent markets and do not resolve to a winner.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+  <Step title="Buy a stance token">
+    Enter an amount and review the contract quote, fee, maximum payment, slippage bound, and deadline before confirming.
 
-    ```bash
-    your-cli start
-    ```
+    ETH topics accept a maximum native payment, wrap the quoted amount into canonical WETH, and refund excess ETH. mUSDC topics use ERC-20 approval in the current UI and refund unused input.
+  </Step>
+  <Step title="Stake as conviction">
+    Stake side tokens in the matching conviction vault. Vault shares are one-for-one with staked token units. A factory-wide cooldown applies before withdrawal.
+  </Step>
+  <Step title="Publish an argument">
+    When your stake meets the topic's `minCommentStake`, stage the readable content and confirm `createPost(side, contentURI)` in your wallet. The post is public only after the `PostCreated` event.
+  </Step>
+  <Step title="Allocate votes">
+    Use your unallocated staked balance as voting power for arguments on the same side. Remove votes before attempting to withdraw the stake that supports them.
+  </Step>
+  <Step title="Claim rewards">
+    Trading fees assigned to your side accrue through its reward distributor. Claimable rewards are read directly from the contracts when available.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+## Create a topic
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+Topic creation follows the same publication rule as arguments:
+
+1. Validate and stage the topic content and optional media.
+2. Receive a permanent metadata URI for the staged record.
+3. Submit `createTopic` or `createTopicCustom` from your wallet.
+4. Wait for the confirmed `TopicCreated` receipt.
+5. Let the web application verify and link the emitted topic identity.
+
+If the browser closes after a successful transaction, the topic may take longer to appear. Ponder can index the event and the application can reconcile the staged URI on a later read.
+
+## Understand data freshness
+
+Public charts, activity, and feeds come from indexed projections and can briefly lag behind the chain. Current balances, stake, quotes, and claimable rewards use direct contract reads where correctness is wallet-sensitive.
+
+<CardGroup cols={2}>
+  <Card title="Publication lifecycle" icon="file-circle-check" href="/technical/content-publication">
+    Learn why a database row alone never publishes a topic or argument.
+  </Card>
+
+  <Card title="API and live updates" icon="radio" href="/technical/api-and-live-updates">
+    See how snapshots, polling, and SSE work together.
+  </Card>
+</CardGroup>

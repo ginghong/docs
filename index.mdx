@@ -1,20 +1,65 @@
 ---
 title: "Introduction"
-description: "Welcome to your project"
+description: "Understand DualClash, its two-sided conviction markets, and the core participation loop."
+icon: "book-open"
 ---
 
-Write a short description of your product here. What it does, who it's for, and what they can accomplish with it.
+DualClash is a two-sided conviction market for public debates. Each topic launches two stance tokens, letting people express a position with capital, stake that position as conviction, publish arguments, back arguments with votes, and share in trading fees.
 
-<Tip>
-  Ready to make this your own? Start by editing this page. Update your `docs.json` file to customize your site. Then fill out the [Quickstart](/quickstart) page.
-</Tip>
+<Note>
+  The implementation and protocol are currently named **Tomborg**, while the product UI is branded **DualClash**. The V3 MVP runs only on **GIWA Sepolia** (chain ID `91342`).
+</Note>
 
-<Card title="Quickstart" icon="rocket" href="/quickstart">
-  This card links to the quickstart page in your project.
-</Card>
-<Card title="Components" icon="puzzle-piece" href="https://mintlify.com/docs/components">
-  Add cards, callouts, steps, tabs, and more to design and structure your pages.
-</Card>
-<Card title="Settings" icon="gear" href="https://mintlify.com/docs/organize/settings">
-  Set your site name, branding, and navigation in the `docs.json` file.
-</Card>
+## What makes DualClash different
+
+DualClash is not a prediction market. Topics do not need an expiry, oracle, resolution, or winning side. A market can remain active as long as people continue to trade and argue.
+
+Every topic contains two independently tradable stance tokens. Their prices respond to each side's supply, overall topic activity, and the contrast between the two sides.
+
+## The core loop
+
+<Steps>
+  <Step title="Choose a side">
+    Discover a topic and buy the stance token that represents your view.
+  </Step>
+  <Step title="Stake conviction">
+    Deposit side tokens into that side's conviction vault. Staked tokens create voting power and may earn side-specific trading-fee rewards.
+  </Step>
+  <Step title="Make the case">
+    Once your stake reaches the topic's minimum threshold, publish an argument for your side.
+  </Step>
+  <Step title="Back strong arguments">
+    Allocate unused voting power to arguments on your side. Votes remain tied to your stake until removed.
+  </Step>
+  <Step title="Trade or claim">
+    Buy and sell along the reversible bonding curve, withdraw unallocated stake after cooldown, and claim accrued rewards.
+  </Step>
+</Steps>
+
+## How the system is organized
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Walk through the product flow on GIWA Sepolia.
+  </Card>
+
+  <Card title="System architecture" icon="network-wired" href="/technical/architecture">
+    Understand the chain, indexer, database, storage, and web boundaries.
+  </Card>
+
+  <Card title="Contracts and economics" icon="landmark" href="/technical/contracts-and-economics">
+    Explore topic topology, curve behavior, fees, staking, votes, and rewards.
+  </Card>
+
+  <Card title="Content publication" icon="file-circle-check" href="/technical/content-publication">
+    See how staged content becomes a published onchain topic or argument.
+  </Card>
+</CardGroup>
+
+## What is authoritative
+
+Financial and user-authorized state transitions live onchain. Ponder builds replayable public projections for fast discovery and charts. Postgres stores readable topic and argument content for the MVP, while the web application composes indexed data with direct contract reads for wallet-sensitive values.
+
+<Warning>
+  mUSDC is faucet-enabled test currency. It is not USDC and must not be treated as a real dollar asset. DualClash V3 has not been audited for real-value deployment.
+</Warning>

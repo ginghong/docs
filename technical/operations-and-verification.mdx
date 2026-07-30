@@ -1,0 +1,105 @@
+---
+title: "Operations and Verification"
+sidebarTitle: "Operations & Verification"
+description: "Runtime expectations, release invariants, failure recovery, health checks, tests, and open engineering decisions."
+icon: "server-cog"
+keywords: ["deployment", "Ponder operations", "verification", "failure recovery"]
+---
+
+DualClash V3 runs as a Next.js web application, one persistent Ponder writer, Supabase Postgres and Storage, and verified contracts on GIWA Sepolia.
+
+## Runtime shape
+
+| Component | Runtime expectation |
+| --- | --- |
+| Web | Next.js Node runtime, intended for Vercel |
+| Indexer | One persistent Ponder container on port `42069` |
+| Database and media | Supabase |
+| Chain | GIWA Sepolia, chain ID `91342` |
+| Local development | Next.js, Ponder, and optional Docker Postgres |
+| Economic simulation | Production contracts on local Anvil |
+
+The indexer writer must not autosleep. WebSocket RPC supplies low-latency ingestion with HTTP polling as fallback. The reverse proxy must support long-lived, unbuffered SSE responses.
+
+## Release invariants
+
+<Steps>
+  <Step title="Deploy contracts">
+    Deploy and verify `MockUSDC`, both V3 market implementations, and `DebateTopicFactoryV3`.
+  </Step>
+  <Step title="Regenerate artifacts">
+    Regenerate the deployment registry and ABI catalog consumed by the web application, indexer, and verification tooling.
+  </Step>
+  <Step title="Anchor indexing">
+    Start Ponder from the exact V3 factory deployment block.
+  </Step>
+  <Step title="Apply database migrations">
+    Run production migrations before switching the web search path.
+  </Step>
+  <Step title="Enforce one writer">
+    Never overlap two `ponder start` writers against `tomborg_giwa_v3`.
+  </Step>
+  <Step title="Wait for readiness">
+    Confirm the indexer readiness check and chain checkpoint before exposing the release.
+  </Step>
+  <Step title="Smoke-test both reserves">
+    Test ETH and mUSDC creation, buys, sells, staking, arguments, votes, and rewards.
+  </Step>
+  <Step title="Preserve V3 history">
+    After V3 publication, recover by reindexing or shipping forward rather than resetting valid production chain activity.
+  </Step>
+</Steps>
+
+## Health and live-update checks
+
+Ponder exposes `/health` and `/ready`. Operational smoke tests should also confirm that:
+
+- one market SSE stream remains open;
+- a controlled trade advances its ticker watermark;
+- the browser refetches the market snapshot; and
+- direct database-style endpoints such as `/sql/db` remain inaccessible.
+
+## Failure modes
+
+| Failure | User-visible behavior | Recovery |
+| --- | --- | --- |
+| Browser closes after confirmed creation | Topic or argument may not appear immediately | Index the event and reconcile the staged URI on a later API read |
+| Ponder lag or restart | Charts and activity are stale or temporarily empty | Resume from checkpoint; direct wallet reads remain available |
+| SSE disconnect | Snapshot invalidation is delayed | Reconnect, refresh on open, and rely on adaptive polling |
+| Web database outage | Content staging and composed public APIs fail | Restore database service, then replay and reconcile |
+| RPC outage | Quotes, finalization, wallet reads, and writes fail | Retry through the configured provider |
+| ETH/USD provider outage | ETH analytics may stop for an uncached hour | Use a reviewed fallback or recover provider, then replay |
+| Supabase Storage outage | New media cannot be staged | Retry or use validated external URLs |
+| Local content loss | `tomborg://` pointers cannot resolve | Restore backups; permanent storage is the long-term fix |
+| Reorg after finalization | Ponder reverts, but a public content link may remain | Run canonicality repair or manual remediation |
+
+## Verification strategy
+
+| Layer | Coverage |
+| --- | --- |
+| Contracts | Curve properties, reserve behavior, topology, fee routing, staking, voting, rewards, round trips, ceiling reopening, and solvency |
+| Shared and indexer logic | Domain validation, curve-preview parity, candle merging, stable IDs, position reduction, and live-query restrictions |
+| Web | Content references, hashing, media validation, database qualification, candle density, receipt verification, SSE parsing, and snapshot composition |
+| Simulations | Standard, light, deep, round-trip, and ceiling-reopen scenarios on a fresh Anvil chain |
+
+Run the standard repository checks before release:
+
+```bash
+yarn check-types
+yarn test
+yarn build
+yarn lint
+```
+
+Generated simulation JSON and CSV reports are diagnostic artifacts and must not modify committed deployment metadata.
+
+## Open engineering decisions
+
+1. Implement Arweave writes and decide whether a future contract version emits content hashes.
+2. Authenticate staging and add rate limits, quotas, and orphan cleanup.
+3. Select production confirmation depth and implement canonicality repair.
+4. Decouple indexing from hourly price availability or define fallback and backfill policy.
+5. Define moderation authority, listing audit trails, and access to unlisted positions.
+6. Expose and test every reward claim path consistently.
+7. Complete an independent security review before real-value deployment.
+8. Resolve the long-term Tomborg and DualClash naming split.
