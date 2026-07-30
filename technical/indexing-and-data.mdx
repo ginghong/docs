@@ -1,0 +1,70 @@
+---
+title: "Indexing and Data"
+sidebarTitle: "Indexing & Data"
+description: "Ponder projections, market candles, USD references, wallet positions, database roles, and media."
+icon: "database"
+keywords: ["Ponder", "candles", "Supabase", "positions"]
+---
+
+Ponder turns V3 contract events into fast, replayable public read models. It discovers topic clones only from `DebateTopicFactoryV3.TopicCreated` and starts at the generated factory deployment block.
+
+<Note>
+  The current Ponder schema is fixed as `tomborg_giwa_v3`. Implementation templates are never treated as live topics.
+</Note>
+
+## Projection map
+
+| Event family | Main projections |
+| --- | --- |
+| `TopicCreated` | `idx_topic`, `idx_activity` |
+| `SideBought`, `SideSold` | `idx_trade`, `idx_ticker`, `idx_candle`, `idx_position`, `idx_activity` |
+| `FeesAccrued` | `idx_fee` |
+| `SideStaked`, `SideUnstaked` | `idx_stake`, `idx_position`, `idx_activity` |
+| `PostCreated`, `PostUnstaked` | `idx_argument`, `idx_activity` |
+| `VotesAllocated`, `VotesRemoved` | `idx_argument`, `idx_argument_vote`, `idx_activity` |
+| Reward and fee claims | `idx_activity`; reward claims also update the position hint |
+
+Keys include chain ID. Event rows use transaction hash plus log index, topic rows use `chainId:topicId`, and position rows use `chainId:topicId:side:address`. Stable keys make handlers idempotent and compatible with Ponder reorg processing.
+
+## Tickers and candles
+
+Trade events include post-trade supplies, reserve, reward pool, and both side spot prices. Each trade updates:
+
+- one immutable trade row;
+- the topic ticker;
+- both side candles for 1m, 5m, 15m, 1h, 4h, and 1d intervals; and
+- the trader's position projection.
+
+Only the traded side receives candle volume. Both sides still receive a same-timestamp close so their time series remain aligned. The web API fills empty buckets by carrying the previous close forward. Before a first trade, it derives a synthetic seed price from the topic's immutable curve configuration.
+
+## Display-only USD references
+
+mUSDC uses a display rate of USD 1. ETH markets use one stored ETH/USD reference per UTC hour. All trades in that hour use the same rate.
+
+This reference is analytics-only and does not affect contract quotes, settlement, reserves, or solvency. Retaining `public.market_eth_usd_hourly` makes historical reindexing deterministic.
+
+<Warning>
+  If an hourly ETH/USD value is absent and neither the configured provider nor fallback is available, processing price-dependent events can pause until a reference becomes available.
+</Warning>
+
+## Position accuracy
+
+`idx_position` discovers topic-and-side pairs that may matter to a wallet. The positions page then reads liquid balance, staked balance, and claimable rewards directly from each relevant topic contract.
+
+Direct reads win when available; the index remains the candidate set and fallback. This avoids scanning every topic through RPC without presenting lagging indexed balances as financial truth.
+
+## Database roles
+
+| Namespace or role | Responsibility |
+| --- | --- |
+| `public` | Content, staged publication state, nonces, and hourly ETH/USD references |
+| `tomborg_giwa_v3` | Ponder-owned application projections |
+| `ponder_sync` | Ponder checkpoints and reorg bookkeeping |
+| `tomborg_web` | Approved public-table writes and V3 projection reads |
+| `tomborg_indexer` | Ponder schema ownership plus hourly reference access |
+
+Supabase migrations are production DDL authority. The Drizzle schema remains the application's query and type model. PostgREST exposes an empty sentinel schema, and `anon`, `authenticated`, and `service_role` have no application-table access.
+
+## Product media
+
+The `topic-media` bucket is publicly readable because banners and side icons are public product content. Writes remain server-mediated. The upload path accepts JPEG, PNG, and WebP, enforces per-kind limits, and checks file signatures instead of trusting MIME headers.

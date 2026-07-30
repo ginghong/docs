@@ -1,0 +1,69 @@
+---
+title: "Security and Trust Boundaries"
+sidebarTitle: "Security & Trust"
+description: "Onchain and offchain controls, known gaps, finality risks, and security-readiness priorities."
+icon: "shield-check"
+keywords: ["security", "trust boundaries", "reorg", "audit"]
+---
+
+DualClash treats the chain as authority for funds and user-authorized actions, while narrowing the permissions of every offchain component.
+
+<Warning>
+  V3 is a testnet architecture. The repository contains extensive tests but no committed independent audit artifact, and it should not secure real value in its current state.
+</Warning>
+
+## Onchain controls
+
+- Clone implementations disable direct initialization; only a fresh clone can initialize.
+- Only the factory can perform one-time initial seeding.
+- Side tokens can be minted, burned, or protocol-transferred only by their market.
+- Vault withdrawals enforce cooldown and vote-allocation constraints.
+- Reward accounting synchronizes users before and after vault-share changes.
+- Asset-moving market entry points are non-reentrant.
+- Trades enforce slippage limits and deadlines onchain.
+- Topic reserve solvency is directly inspectable.
+- Existing topics have no pause, upgrade, reserve migration, or privileged-trade path.
+
+## Offchain controls
+
+- Database and Storage credentials are server-only and never `NEXT_PUBLIC_*`.
+- Browsers have no direct Supabase Data API access to application tables.
+- The web role cannot write Ponder projections.
+- The public Ponder endpoint exposes only one fixed ticker-watermark query.
+- Receipt finalization validates addresses, sender, events, registry membership, reserve type, topology identities, and clone code.
+- Shared validation protects both content-facing APIs and contract argument construction.
+- Media uploads check signatures rather than trusting submitted MIME types.
+
+## Known gaps
+
+| Gap | Impact | Required direction |
+| --- | --- | --- |
+| Unauthenticated staging and media writes | Orphan rows and public Storage consumption | Require wallet signatures, rate limits, quotas, and garbage collection |
+| One-confirmation finalization | A deep reorg may leave a stale public content link | Increase confirmation depth or add canonicality repair |
+| Database-backed `tomborg://` content | Onchain pointers depend on database availability and backups | Implement permanent storage and consider emitting content hashes |
+| No audit artifact | Unknown contract and integration risk | Complete independent onchain and offchain review |
+| External ETH/USD dependency | New ETH analytics rows may stop for an uncached hour | Decouple ingestion or define a reviewed fallback and backfill policy |
+| Listing controls not fully defined | Moderation authority and audit trail remain unclear | Specify authorization, logging, and safe access to unlisted positions |
+
+## Publication trust boundary
+
+A staged row may contain misleading wallet metadata, but it cannot become a published topic or argument without the corresponding chain event. Finalization corrects the author from the transaction receipt.
+
+This protects publication integrity, not storage resources. Authentication and rate limiting are still necessary to prevent staging abuse.
+
+## Finality caveat
+
+Ponder is reorg-aware and can revert its derived state. The current content reconciliation path only links rows; it does not automatically unlink a `public.topics` or `public.comments` row whose receipt later becomes non-canonical.
+
+Before higher-value use, finality policy and canonicality repair need to be explicit release requirements.
+
+## Security readiness checklist
+
+- Complete an independent contract audit and offchain review.
+- Add signed staging actions and replay-safe nonce handling.
+- Rate-limit content and media endpoints.
+- Garbage-collect abandoned staged content and uploads.
+- Select a production confirmation depth.
+- Detect and repair non-canonical receipt links.
+- Test database backup restoration and permanent-content recovery.
+- Exercise all reward claim paths and solvency checks under adversarial scenarios.
