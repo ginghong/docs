@@ -26,8 +26,7 @@
         "pages": [
           "index",
           "thesis-and-principles",
-          "how-it-works",
-          "product-experience"
+          "how-it-works"
         ]
       },
       {
@@ -35,9 +34,7 @@
         "icon": "code",
         "pages": [
           "technical/architecture",
-          "technical/contracts-and-economics",
-          "technical/content-data-and-api",
-          "technical/security-and-operations"
+          "technical/contracts-and-economics"
         ]
       }
     ]

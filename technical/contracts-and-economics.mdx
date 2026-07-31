@@ -1,5 +1,5 @@
 ---
-title: "Contracts & Economics"
+title: "Topics Economics"
 sidebarTitle: "Contracts & Economics"
 description: "Per-topic topology, reversible curves, reserves, fees, staking, votes, and rewards."
 icon: "landmark"
@@ -22,10 +22,10 @@ The factory records `topicById`, `isTopic`, and `reserveKindOf`. Implementation 
 
 Shared behavior lives in `TopicMarketBaseV3`; only asset movement differs.
 
-| Market | User reserve | Internal reserve | Decimals | Buy behavior |
-| --- | --- | --- | --- | --- |
-| `EthTopicMarketV3` | ETH | Canonical WETH | 18 | Wraps the quote and refunds excess ETH |
-| `UsdcTopicMarketV3` | mUSDC | `MockUSDC` | 6 | Transfers a maximum payment and refunds unused mUSDC |
+| Market | User reserve | Decimals | Buy behavior |
+| --- | --- | --- | --- |
+| `EthTopicMarketV3` | ETH | 18 | Wraps the quote and refunds excess ETH |
+| `UsdcTopicMarketV3` | mUSDC | 6 | Transfers a maximum payment and refunds unused mUSDC |
 
 mUSDC supports EIP-2612, although the current UI uses ERC-20 approval.
 
