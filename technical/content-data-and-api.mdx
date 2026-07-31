@@ -1,0 +1,99 @@
+---
+title: "Content, Data & API"
+sidebarTitle: "Content, Data & API"
+description: "Publication, Ponder projections, Postgres content, product APIs, and live updates."
+icon: "database"
+keywords: ["TopicCreated", "PostCreated", "Ponder", "Next.js API", "SSE"]
+---
+
+DualClash keeps readable content offchain while using contract events as publication authority. Ponder turns those events into replayable product views, and Next.js composes them with content and direct RPC reads.
+
+## Publication model
+
+Canonical payloads use stable key ordering and Keccak-256 hashing:
+
+- `tomborg.topic.v3`
+- `tomborg.comment.v1`
+
+The current content store issues `tomborg://topics/<uuid>` and `tomborg://comments/<uuid>` URIs. The URI is stored onchain. The content hash is stored offchain, but V3 events do not emit it, so the hash is not chain-verifiable and no background drift detector currently runs.
+
+## Publication lifecycle
+
+<Steps>
+  <Step title="Stage">
+    Validate readable content, upload optional media, and insert an unlinked database row.
+  </Step>
+  <Step title="Submit">
+    Return the content URI and let the wallet call `createTopic`, `createTopicCustom`, or `createPost`.
+  </Step>
+  <Step title="Verify">
+    Verify the successful receipt, sender, expected contract, emitted event, and topic topology.
+  </Step>
+  <Step title="Link">
+    Link the staged row to the emitted topic or post identity.
+  </Step>
+  <Step title="Reconcile">
+    Let the Ponder-backed repair path recover if the browser closes or finalization times out.
+  </Step>
+</Steps>
+
+Only linked topics and comments with matching active indexed events appear as published. `is_listed` can remove a topic from discovery without deleting it or preventing direct access.
+
+<Warning>
+  Current `tomborg://` links depend on the application database and backups. The intended migration is canonical JSON → hash → Arweave upload → `ar://` URI. `ArweaveContentStore` is not implemented yet.
+</Warning>
+
+## Ponder projections
+
+Ponder discovers topic clones only from `DebateTopicFactoryV3.TopicCreated`, starting at the generated factory deployment block. The fixed schema is `tomborg_giwa_v3`.
+
+| Event family | Main projections |
+| --- | --- |
+| Topic creation | Topics and activity |
+| Buys and sells | Trades, ticker, candles, positions, and activity |
+| Fees | Fee history |
+| Stakes and withdrawals | Stakes, positions, and activity |
+| Posts and deactivations | Arguments and activity |
+| Vote changes | Arguments, vote allocations, and activity |
+| Claims | Activity and position hints |
+
+Stable keys include chain ID and make handlers idempotent and reorg-compatible.
+
+## Candles, prices, and positions
+
+Each trade updates an immutable trade row, the topic ticker, both side candles, and the trader's position projection. Candle intervals are 1m, 5m, 15m, 1h, 4h, and 1d. Only the traded side receives volume; both sides receive a same-time close to keep series aligned. APIs carry the previous close through empty buckets.
+
+mUSDC displays at USD 1. ETH markets use one stored ETH/USD reference per UTC hour. This value is analytics-only and never affects quotes, settlement, reserves, or solvency.
+
+`idx_position` finds topic-side pairs relevant to a wallet. The position view then reads liquid balance, stake, and claimable rewards directly from contracts. Direct reads win; the index remains the candidate set and fallback.
+
+## API boundary
+
+Public reads are organized around four resources:
+
+| Resource | Main routes |
+| --- | --- |
+| Topics | `/api/topics`, `/api/topics/:topicId`, ticker, snapshot, candles, arguments, and activity |
+| Positions | `/api/positions?user=...` |
+| Comments | `/api/comments` |
+| Staged writes | `POST` and `PATCH` routes for topics and comments |
+
+Snapshots combine ticker, dense candles, arguments, activity, and participants. The browser requests financial snapshots without HTTP caching; React Query provides client refresh and invalidation after transactions.
+
+The server verifies publication receipts but never signs financial or social contract actions. Topic creation, trading, staking, posting, voting, and claims are signed directly by the wallet.
+
+## Live updates
+
+Ponder exposes only a restricted ticker-watermark SSE signal:
+
+```http
+GET /live/markets/:chainId/:topicId
+```
+
+A new watermark tells the browser to refetch the versioned snapshot; the SSE event never carries financial state. Reconnect refresh, adaptive polling, and post-transaction invalidation preserve correctness when signals are missed.
+
+## Database and media controls
+
+Production migrations define database authority. The web role can write approved public content tables and read V3 projections; it cannot write Ponder data. Browser roles have no application-table access.
+
+The public `topic-media` bucket stores banners and side icons. Writes are server-mediated, limited by media kind, and validated by file signature for JPEG, PNG, and WebP.

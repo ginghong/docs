@@ -1,0 +1,62 @@
+---
+title: "How DualClash Works"
+sidebarTitle: "How It Works"
+description: "The market, staking, argument, voting, and reward loop."
+icon: "diagram-project"
+keywords: ["DualClash flow", "bonding curve", "voting power", "arguments"]
+---
+
+Each topic has two opposing stance tokens. Participants can trade either token, stake it as conviction, use the resulting voting power in the argument layer, and earn that side's share of trading fees.
+
+## Participate in a topic
+
+<Steps>
+  <Step title="Discover and compare">
+    Review the question, both stance tokens, market activity, and leading arguments. The higher-priced side is leading in economic support—not proven correct.
+  </Step>
+  <Step title="Buy a stance token">
+    Choose a side and review the quoted output, fees, price impact, slippage bound, and deadline before signing. Each side has its own reversible bonding curve.
+  </Step>
+  <Step title="Stake conviction">
+    Deposit tokens into the matching conviction vault. Vault shares are one-for-one with staked token units, and voting power equals the staked balance.
+  </Step>
+  <Step title="Publish an argument">
+    A topic may require a minimum stake before posting. The MVP uses **10 voting power** as the participation threshold.
+  </Step>
+  <Step title="Back strong arguments">
+    Allocate unused voting power to arguments on your side. Votes rank arguments; they do not change token prices. Remove active votes before withdrawing the stake that supports them.
+  </Step>
+  <Step title="Trade, unstake, or claim">
+    Sell along the curve, withdraw unallocated stake after cooldown, or claim side-specific fee rewards.
+  </Step>
+</Steps>
+
+## Three connected layers
+
+| Layer | What it shows |
+| --- | --- |
+| Stance market | Relative attention and economic conviction through two tradable tokens |
+| Argument layer | The reasoning each side supports with committed voting power |
+| Identity layer | Affiliation, participation, roles, and recognition within a side |
+
+## Current market model
+
+- Topics are permanent and do not expire or resolve.
+- Both sides can grow; there is no protocol-declared winner.
+- Trading determines supply and price; votes rank arguments.
+- Staking creates voting power and may earn side-specific trading fees.
+- Product identity is **DualClash**; implementation names use **Tomborg**.
+
+## Testnet requirements
+
+| Requirement | Current setting |
+| --- | --- |
+| Network | GIWA Sepolia |
+| Chain ID | `91342` |
+| Wallet | EVM-compatible wallet |
+| Gas | Testnet ETH |
+| Reserve assets | ETH or faucet-enabled mUSDC, depending on the topic |
+
+<Warning>
+  mUSDC is test currency, not USDC or a claim on US dollars. V3 has not been audited for real-value deployment.
+</Warning>

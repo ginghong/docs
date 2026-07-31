@@ -1,0 +1,82 @@
+---
+title: "Contracts & Economics"
+sidebarTitle: "Contracts & Economics"
+description: "Per-topic topology, reversible curves, reserves, fees, staking, votes, and rewards."
+icon: "landmark"
+keywords: ["bonding curve", "side token", "conviction vault", "reward distributor"]
+---
+
+Each topic is an isolated contract system with immutable economics. Reserves, side tokens, stakes, votes, and rewards are inspectable per topic rather than pooled in one shared market.
+
+## Per-topic topology
+
+`DebateTopicFactoryV3` selects the reserve implementation and creates one EIP-1167 market clone plus six topic-owned components:
+
+- proposition and opposition `SideToken` contracts;
+- proposition and opposition `ConvictionVault` contracts; and
+- proposition and opposition `ReserveRewardDistributor` contracts.
+
+The factory records `topicById`, `isTopic`, and `reserveKindOf`. Implementation contracts are templates and must never be treated as live markets.
+
+## Reserve implementations
+
+Shared behavior lives in `TopicMarketBaseV3`; only asset movement differs.
+
+| Market | User reserve | Internal reserve | Decimals | Buy behavior |
+| --- | --- | --- | --- | --- |
+| `EthTopicMarketV3` | ETH | Canonical WETH | 18 | Wraps the quote and refunds excess ETH |
+| `UsdcTopicMarketV3` | mUSDC | `MockUSDC` | 6 | Transfers a maximum payment and refunds unused mUSDC |
+
+mUSDC supports EIP-2612, although the current UI uses ERC-20 approval.
+
+## Reversible curve
+
+Each side token has a hard maximum supply of **21,000,000** and a curve ceiling of **20,790,000** tokens (99% of maximum supply). Buys mint and sells burn; a complete exit returns that side's supply and curve-reserve contribution to zero.
+
+The reserve function `R(p, o, config)` combines:
+
+- logarithmic pressure for each side;
+- overall topic heat;
+- smoothed contrast between side supplies; and
+- configurable pacing.
+
+A trade settles the reserve delta:
+
+```text
+buy curve cost = R(after) - R(before)
+gross buy cost = curve cost + buy fee
+
+gross sell refund = R(before) - R(after)
+net sell refund   = gross refund - sell fee
+```
+
+Preset selections resolve to a numeric `MarketConfig`. Custom topics pass validated values. The resolved configuration and hash are immutable.
+
+<Note>
+  The Solidity field `depthWei` is historical naming. In mUSDC markets it stores six-decimal reserve units, not wei.
+</Note>
+
+Trades enforce deadlines and maximum-input or minimum-output bounds. Validation rejects zero amounts, supply above the ceiling, invalid configuration, and non-positive reserve deltas.
+
+## Fees and rewards
+
+Every trade fee splits into creator, platform, and side-reward shares. The side-reward share moves to the traded side's distributor and accrues per vault share. If that side has no stakers, its reward share goes to the platform so funds cannot become stranded.
+
+Market reserve, creator fees, and platform fees remain liabilities of the topic market. Reward assets are transferred to the distributor. `isReserveSolvent()` checks that the market balance covers all liabilities it still holds.
+
+## Conviction, arguments, and votes
+
+- Staking transfers liquid side tokens into the matching vault.
+- Vault shares remain one-for-one with staked token units.
+- A factory-wide immutable cooldown controls withdrawal timing.
+- Publishing requires stake on that side to meet `minCommentStake`.
+- Voting power equals the staked balance on that side.
+- Allocated votes cannot exceed unused voting power.
+- Stake supporting active votes cannot be withdrawn.
+- Deactivated posts remain available for vote removal so stake cannot become trapped.
+
+## Administrative limits
+
+The factory owner can change the creation fee and default treasury for future topics, and withdraw collected creation fees. Existing topics cannot have their creator, treasury, reserve kind, curve, fees, or posting threshold changed.
+
+There is no market pause, upgrade hook, reserve migration, or privileged trade. Asset-moving entry points are non-reentrant, and only the factory can perform one-time initial seeding.
