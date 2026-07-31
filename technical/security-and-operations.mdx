@@ -1,0 +1,110 @@
+---
+title: "Security & Operations"
+sidebarTitle: "Security & Operations"
+description: "Trust boundaries, known gaps, runtime requirements, release checks, and recovery."
+icon: "shield-check"
+keywords: ["security", "operations", "reorg", "deployment", "verification"]
+---
+
+DualClash treats the chain as authority for funds and user-authorized actions while limiting each offchain component's permissions.
+
+<Warning>
+  V3 is a testnet system. It has extensive automated tests but no committed independent audit artifact and must not secure real value in its current state.
+</Warning>
+
+## Existing controls
+
+### Onchain
+
+- Clone implementations disable direct initialization; only fresh clones can initialize.
+- Only the factory can perform one-time initial seeding.
+- Only a market can mint, burn, or protocol-transfer its side tokens.
+- Vault withdrawals enforce cooldown and vote-allocation constraints.
+- Reward accounting synchronizes around vault-share changes.
+- Asset-moving entry points are non-reentrant.
+- Trades enforce slippage bounds and deadlines.
+- Topic reserve solvency is directly inspectable.
+- Existing topics have no pause, upgrade, migration, or privileged-trade path.
+
+### Offchain
+
+- Database and Storage credentials remain server-only.
+- Browsers have no direct application-table access.
+- The web role cannot write Ponder projections.
+- Public Ponder access is restricted to one ticker-watermark query.
+- Receipt verification checks sender, events, registry membership, reserve type, topology, and clone code.
+- Shared validation protects content APIs and contract arguments.
+- Media uploads validate file signatures.
+
+## Known gaps
+
+| Gap | Impact | Required direction |
+| --- | --- | --- |
+| Unsigned staging and media writes | Spam, orphan rows, and Storage consumption | Wallet signatures, rate limits, quotas, and cleanup |
+| One-confirmation finalization | Deep reorgs may leave stale content links | Deeper confirmation or canonicality repair |
+| Database-backed content | Onchain pointers depend on backups | Permanent storage and optional emitted hashes |
+| No independent audit | Unknown contract and integration risk | Onchain and offchain review |
+| ETH/USD dependency | ETH analytics can pause for an uncached hour | Decouple ingestion or define fallback and backfill |
+| Undefined listing authority | Moderation actions lack a complete audit model | Authorization, logging, and safe unlisted access |
+
+A staged row can contain false wallet metadata, but it cannot become published without the matching event. Finalization corrects the author from the receipt. This protects publication integrity, not staging resources.
+
+## Runtime shape
+
+| Component | Requirement |
+| --- | --- |
+| Web | Next.js Node runtime, intended for Vercel |
+| Indexer | One persistent Ponder writer on port `42069`; no autosleep |
+| Database and media | Supabase Postgres and Storage |
+| Chain | GIWA Sepolia, chain ID `91342` |
+| Local simulation | Production contracts on Anvil |
+
+WebSocket RPC provides low-latency ingestion with HTTP polling as fallback. The reverse proxy must support long-lived, unbuffered SSE responses.
+
+## Release invariants
+
+1. Deploy and verify mUSDC, both market implementations, and `DebateTopicFactoryV3`.
+2. Regenerate the deployment registry and ABI catalog.
+3. Start Ponder at the exact V3 factory deployment block.
+4. Apply production migrations before switching read traffic.
+5. Run only one `ponder start` writer for `tomborg_giwa_v3`.
+6. Confirm readiness and chain checkpoint before exposure.
+7. Smoke-test ETH and mUSDC creation, trades, staking, posts, votes, and rewards.
+8. Preserve published V3 history; recover by replaying or shipping forward.
+
+## Recovery priorities
+
+| Failure | Recovery |
+| --- | --- |
+| Browser closes after creation | Index the event and reconcile the staged URI |
+| Ponder lag or restart | Resume from checkpoint; retain direct wallet reads |
+| SSE disconnect | Refresh on reconnect and use adaptive polling |
+| Database or Storage outage | Restore service and backups, then replay and reconcile |
+| RPC outage | Retry through the configured provider |
+| ETH/USD outage | Restore or use reviewed fallback, then replay |
+| Reorg after finalization | Run canonicality repair or manual remediation |
+
+## Verification
+
+Tests cover curve properties, reserve behavior, fee routing, staking, voting, rewards, solvency, stable projection IDs, candle merging, receipt verification, media validation, SSE restrictions, and snapshot composition. Economic simulations run production contracts on fresh Anvil chains.
+
+Before release:
+
+```bash
+yarn check-types
+yarn test
+yarn build
+yarn lint
+```
+
+Also verify `/health`, `/ready`, one live SSE stream, ticker advancement after a controlled trade, browser snapshot refresh, and rejection of unrestricted `/sql/*` access.
+
+## Before real-value deployment
+
+- Complete an independent contract and offchain review.
+- Authenticate staging and add abuse controls.
+- Select confirmation depth and implement canonicality repair.
+- Complete permanent content storage and recovery tests.
+- Define listing and moderation authority.
+- Exercise every reward claim path and adversarial solvency scenario.
+- Resolve the long-term Tomborg and DualClash naming split.
